@@ -1,0 +1,19 @@
+---
+title: Sorting Algorithm Analysis
+subtitle: College Colloquium Final
+
+author:
+  name: Isaiah Trotter
+  affiliation:
+    name: Willamette River Valley
+    url: https://willamette.edu
+
+format:
+  html:
+   theme: darkly
+
+lightbox: true
+---
+
+## Preamble
+
