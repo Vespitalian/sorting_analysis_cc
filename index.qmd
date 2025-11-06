@@ -10,8 +10,10 @@ author:
 
 format:
   html:
-   theme: darkly
+    theme: darkly
 
+
+embed-resources: true
 lightbox: true
 ---
 
