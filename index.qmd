@@ -10,12 +10,318 @@ author:
 
 format:
   html:
-    theme: darkly
-
+    theme: cyborg
+    toc: true
+    toc-float: true
 
 embed-resources: true
 lightbox: true
 ---
-
 ## Preamble
+#### Why Sorting Matters
+Imagine trying to find a word in a dictionary that's in a completely random 
+order. It would take forever, you would have to check every entry but thanks 
+to sorting words alphabetically you can easily find any word at a much faster 
+rate.
 
+To put it simply, sorting is about taking something "unorganized"
+and making it appear "ordered". In computer science, a sorting
+algorithm is the set of instructions that a computer follows
+to turn a jumbled list like names, scores, or in our case, numbers 
+and arrange them in a specific desired order. For this project we will 
+be focusing on ascending numerical order.
+
+Now that we know sorting is important it may also start to make sense that 
+the way in which we sort is also important. Improving the speed of algorithms 
+is the difference between noticeable lag and the instant display of rearranged 
+data when working with large datasets, such as on a spreadsheet. Efficent sorting 
+optimizes tasks like searching for data, merging datasets, finding median values, 
+or even optimizing other algorithms. This project looks at the different ways in 
+which we sort (in python).
+
+## Algorithm Theory
+- In this section we will go over the logic, the time complexity and Python code for each sorting algorithm. 
+
+### Selection Sort
+Selection Sort is a straightforward but inefficient algorithm.
+It works by repeatedly finding the smallest element from the
+unsorted portion of the array and moving it to the front of the unsorted 
+array. The process continues until the entire array is sorted.
+
+- Scan the entire unsorted portion of the array to locate the lowest value.
+- Swap this lowest value with the element at the current starting position of the unsorted subarray.
+- Repeat the process for the remaining unsorted elements until the entire array is sorted.
+
+#### Time Complexity
+Selection sort scans the remaing $n$ elements $n$ times, regardless of whether 
+the array is sorted or not.
+
+- **Best Case:** $O(n^2)$
+- **Average Case:** $O(n^2)$
+- **Worst Case:** $O(n^2)$
+
+#### Implementation
+```{python}
+def select_sort(in_array):
+    array = in_array[::]
+    n = len(array)
+    for i in range(n):
+        min_index = i
+        for j in range(i+1, n):
+            if array[j] < array[min_index]:
+                min_index = j
+        array[i], array[min_index], = array[min_index], array[i]
+    return array
+```
+> This code is modified from w3schools.com.
+
+### Double Selection Sort
+There's a pretty simple improvement called double selection sort this
+time you have two current positions A and B. A goes left to right and
+B goes right to left every round you find both the smallest and the
+largest piece from A to B. Swap the smallest with A and the largest
+with B and repeat. Double selection does half as many rounds as
+single selection making it twice as fast.
+
+#### Complexity
+While it does half as many rounds, each round still scans the
+entire unsorted portion. In Big O notation, $O(\frac{n^2}{2})$
+simplifies to $O(n^2)$. It is theoretically identical to Selection
+Sort, but should be practically about twice as fast.
+
+- **Best Case:** $O(n^2)$
+- **Average Case:** $O(n^2)$
+- **Worst Case:** $O(n^2)$
+
+#### Implementation
+
+```{python}
+def double_select_sort(in_array):
+    array = in_array[::]
+    n = len(array)
+    left = 0
+    right = n - 1
+    while left < right:
+        min_index = left
+        max_index = right
+        for i in range(left, right + 1):
+            if array[i] < array[min_index]:
+                min_index = i
+            if array[i] > array[max_index]:
+                max_index = i
+
+        array[left], array[min_index] = array[min_index], array[left]
+
+        if max_index == left:
+            max_index = min_index
+
+        array[right], array[max_index] = array[max_index], array[right]
+
+        left += 1
+        right -= 1
+    return array
+```
+> This code was AI-generated.
+
+### Insertion Sort
+With this sorting algorithm you go through the list
+left to right for each piece you assume that the left
+of the piece is already sorted and move the piece left
+until you find where it fits.
+
+- Start with the first element of the list, considering it the initial "sorted" portion.
+- Take the next value from the unsorted portion of the array.
+- Compare this value backward against elements in the sorted portion.
+- Insert the value into the first position where it is greater than the next element.
+- Repeat until all elements are in the sorted portion
+
+#### Complexity
+This algorithm's performance can very heavily based on the input. If the 
+array is already sorted, it makes one pass, confirms each element is in 
+place, and finishes. However if the array is reverse-sorted, it must move
+every element all the way to the beginning.
+
+- **Best Case:** $O(n)$
+- **Average Case:** $O(n^2)$
+- **Worst Case:** $O(n^2)$
+
+#### Implementation
+
+```{python}
+def insert_sort(in_array):
+    array = in_array[::]
+    n = len(array)
+    for i in range(1,n):
+        insert_index = i
+        current_value = array[i]
+        for j in range(i-1, -1, -1):
+            if array[j] > current_value:
+                insert_index = j
+            else:
+                break
+    array[insert_index] = current_value
+    return array
+```
+> This code is modified from w3schools.com
+
+### Bubble Sort
+Bubble Sort is another simple, $O(n^2)$ algorithm. It repeatedly
+steps through the list, compares adjacent elements, and swaps them
+if they are in the wrong order. The largest elements "bubble" up to
+the end of the list with each pass.
+
+- Go through the list, one value at a time.
+- For each value, compare the value with the next value.
+- If the value is higher than the next one, swap the values so that the highest value comes last.
+- Go through the list as many times as there are values in the list.
+
+#### Complexity
+Bubble sort has the same time complexity as Insertion Sort, its best-case 
+performance is $O(n)$ if the list is already sorted, as it will only make
+ one pass, perform no swaps, and exit.
+
+- **Best Case (already sorted):** $O(n)$
+- **Average Case:** $O(n^2)$
+- **Worst Case (reverse sorted):** $O(n^2)$
+
+#### Implementation
+
+```{python}
+def bubble_sort(in_array):
+    array = in_array[::]
+    n = len(array)
+    for i in range(n-1):
+        swapped = False
+        for j in range(n-i-1):
+            if array[j] > array[j+1]:
+                array[j], array[j+1] = array[j+1], array[j]
+                swapped = True
+        if not swapped:
+            break
+
+    return array
+```
+> This code is modified from w3schools.com
+
+### Merge Sort
+Merge Sort is a recursive, divide-and-conquer algorithm.
+It divides the array into halves until single elements remain,
+then merges those splits back together in sorted order.
+
+- Divide the unsorted array into two sub-arrays, each half the size of the original.
+- Keep dividing each sub-array until every piece has only one element.
+- Merge two sub-arrays together by repeatedly placing the smallest element first.
+- Continue merging until you have combined all sub-arrays back into a fully sorted array.
+
+#### Complexity
+
+Because it always divides the array, its performs the same regardless of 
+the initial order. It takes $\log(n)$ levels of division, and each level 
+takes $O(n)$ work to merge.
+
+- **Best Case:** $O(n \log n)$
+- **Average Case:** $O(n \log n)$
+- **Worst Case:** $O(n \log n)$
+
+#### Implementation
+
+```{python}
+def merge(left, right):
+    result = []
+    i = j = 0
+
+    while i < len(left) and j < len(right):
+        if left[i] < right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+
+    # Append any remaining elements
+    result.extend(left[i:])
+    result.extend(right[j:])
+
+    return result
+
+def mergeSort(in_array):
+    array = in_array[::]
+    if len(array) <= 1:
+        return array
+
+    mid = len(array) // 2
+    leftHalf = array[:mid]
+    rightHalf = array[mid:]
+
+    sortedLeft = mergeSort(leftHalf)
+    sortedRight = mergeSort(rightHalf)
+
+    return merge(sortedLeft, sortedRight)
+```
+> This code is modified from w3schools.com
+
+### Pyhon's sorted() or Timsort
+
+Timsort is the built-in sorting algorithm used by Python.
+It's a hybrid algorithm, combining Insertion Sort and Merge Sort.
+It's designed to be very fast on "real-world" data, which often
+contains partially-sorted "runs". It finds these runs, sorts them
+with Insertion Sort, and then merges them using Merge Sort.
+
+#### Complexity
+It is highly optimized, with a best-case of $O(n)$ (like Insertion
+Sort) and an average/worst case of $O(n \log n)$ (like Merge Sort).
+
+- **Best Case:** $O(n)$
+- **Average Case:** $O(n \log n)$
+- **Worst Case:** $O(n \log n)$
+
+#### Implementation
+
+> We will use the built-in `sorted()` function directly in our benchmark.
+
+### Bogo Sort
+Bogo Sort is a joke algorithm used only for educational purposes to
+demonstrate a terrible, inefficient approach. Its strategy is
+simple:
+
+1. Check if the list is sorted.
+2. If not, randomly shuffle the list.
+3. Repeat.
+
+#### Complexity
+- **Best Case:** The list is already sorted. It checks once and finishes: $O(n)$.
+- **Average Case:** The algorithm relies on random chance to find the _one_ correct permutation out of $n!$ possible permutations: $O(n!)$.
+- **Worst Case:** It is not guaranteed to ever finish. It could, by chance, shuffle the list into the same incorrect orders forever: $\infty$.
+
+#### Implementation
+
+```{python}
+import random
+
+def is_sorted(array):
+    n = len(array)
+    for i in range(n - 1):
+        if array[i] > array[i + 1]:
+            return False
+    return True
+
+def bogo_sort(in_array):
+    array = in_array[::]
+
+    while not is_sorted(array):
+        random.shuffle(array)
+
+    return array
+```
+
+## Benchmarking
+
+First we need to import all of the different libraries that we
+are going to as seen below.
+
+```{python}
+import pandas as pd
+import time
+import random
+```
