@@ -22,11 +22,11 @@ lightbox: true
 ## Preamble
 
 Scientific computing has transformed how humans work, 
-think, and solve problems. It can automate complex, 
+think, and solve problems. We can automate complex, 
 repetitive, and time-consuming tasks that would can 
 take hours or even days to complete by hand. This project 
 shows how scientific computing makes our lives easier by 
-taking on the hard parts of problems.
+taking on the tedious parts of problems.
 
 Sorting algorithms provide a clear example of this. 
 Sorting by hand requires focus and patience, especially 
@@ -65,27 +65,27 @@ several different sorting algorithms, implemented in Python.
 Having established why sorting matters, we now explore several 
 algorithms that perform this task, analyzing their logic, time 
 complexity, and implementation in Python. Each demonstrates 
-how computation automates logic that humans could perform in theory 
-but would take far too long to do efficiently in practice.
+logic that humans could perform in theory but would take far too 
+long to do efficiently in practice.
 
 ### Selection Sort
 Selection Sort is one of the most straightforward algorithms and it 
-clearly shows how computation can automate human steps. It finds the 
-smallest element in a list, moves it to the beginning, and repeats 
-the process until everything is in order.
+clearly shows how scientific computing can automate human steps. It 
+finds the smallest element in a list, moves it to the beginning, and 
+repeats the process until everything is in order.
 
--   Scan the unsorted portion of the list to locate the lowest value.
--   Swap this lowest value with the element at the current starting position of the unsorted sublist.
--   Repeat the process for the remaining unsorted elements until the entire list is sorted.
+1. Scan the unsorted portion of the list to locate the lowest value.
+2. Swap this lowest value with the element at the current starting position of the unsorted sublist.
+3. Repeat the process for the remaining unsorted elements until the entire list is sorted.
 
 #### Time Complexity
 Selection sort scans the remaing $n$ elements $n$ times, regardless 
-of whether the list is sorted or not. Its comparison count is always 
-$O(n^2)$
+of whether the list is sorted or not. Its number of comparisons stays 
+the same for every case resulting in a time complexity of $O(n^2)$.
 
--   **Best Case:** $O(n^2)$
--   **Average Case:** $O(n^2)$
--   **Worst Case:** $O(n^2)$
+- **Best Case:** $O(n^2)$
+- **Average Case:** $O(n^2)$
+- **Worst Case:** $O(n^2)$
 
 #### Implementation
 
@@ -102,34 +102,29 @@ def select_sort(in_lst):
         lst[i], lst[min_index], = lst[min_index], lst[i]
     return lst
 ```
-
 > This code is modified from w3schools.com.
-
-You could follow this same logic manually but when 
-looking at larger data this task could take significant 
-time and concentration. The computer is able to complete 
-this task instantly and without any error.
 
 ### Insertion Sort
 This algorithm builds the sorted list one element at a time. 
 It iterates through the list, and for each element, it "inserts" 
 it into its correct position which it assumes is to its left by 
-shifting other elements to the right.
+shifting other elements to the right until the current element 
+fits.
 
--   Start with the first element of the list, considering it the initial "sorted" portion.
--   Take the next value from the unsorted portion of the list.
--   Compare this value backward against elements in the sorted portion.
--   Insert the value into the first position where it is greater than the next element.
--   Repeat until all elements are in the sorted portion
+1. Start with the first element of the list, thinking of it as the initial "sorted" portion.
+2. Take the next value from the unsorted portion of the list.
+3. Compare this value backward against elements in the sorted portion.
+4. Insert the value into the first position where it is greater than the next element.
+5. Repeat until all elements are in the sorted portion.
 
 #### Complexity
-This algorithm's performance can vary heavily based on the input. 
-If the list is already sorted, it makes one pass, makes no shifts, 
+This algorithm's performance is similar to Selection Sort. However, 
+if the list is already sorted, it makes one pass over $n$, makes no shifts, 
 and ends.
 
--   **Best Case:** $O(n)$
--   **Average Case:** $O(n^2)$
--   **Worst Case:** $O(n^2)$
+- **Best Case:** $O(n)$
+- **Average Case:** $O(n^2)$
+- **Worst Case:** $O(n^2)$
 
 #### Implementation
 
@@ -147,12 +142,7 @@ def insert_sort(in_lst):
         lst.insert(insert_index, current_value)
     return lst
 ```
-
 > This code is modified from w3schools.com
-
-Like Selection Sort, you could have performed Insertion Sort 
-but again, it would be slow and prone to mistakes. Computers 
-can do the same operation thousands of times faster.
 
 ### Bubble Sort
 Bubble Sort is another simple, $O(n^2)$ algorithm. It repeatedly 
@@ -160,20 +150,19 @@ steps through the list, compares adjacent elements, and swaps them
 if they are in the wrong order. The largest elements "bubble" up to 
 the end of the list with each pass.
 
--   Go through the list, one value at a time.
--   For each value, compare the value with the next value.
--   If the value is higher than the next one, swap the values so that the highest value comes last.
--   Go through the list as many times as there are values in the list.
+1. Go through the list, one value at a time.
+2. For each value, compare the value with the next value.
+3. If the value is higher than the next one, swap the values so that the highest value comes last.
+4. Go through the list as many times as there are values in the list.
 
 #### Complexity
 Bubble sort has the same time complexity as Insertion Sort. 
 Its best-case performance is $O(n)$ if the list is already 
-sorted, as it will only make one pass, perform no swaps, and 
-exit.
+sorted.
 
--   **Best Case (already sorted):** $O(n)$
--   **Average Case:** $O(n^2)$
--   **Worst Case (reverse sorted):** $O(n^2)$
+- **Best Case:** $O(n)$
+- **Average Case:** $O(n^2)$
+- **Worst Case:** $O(n^2)$
 
 #### Implementation
 
@@ -203,22 +192,22 @@ is sorted.
 ### Merge Sort
 Merge Sort is a big leap in how complex and efficient the 
 algorithm is. It splits the dataset into smaller parts, 
-sorts each one, and then merges them together into a complete, 
-ordered list.
+sorts each one, and then merges them together into a complete 
+and ordered list.
 
--   Divide the unsorted list into two sublists, each half the size of the original.
--   Keep dividing each sublist until every piece has only one element.
--   Merge two sublists together by repeatedly placing the smallest element first.
--   Continue merging until you have combined all sublists back into a fully sorted list.
+1. Divide the unsorted list into two sublists, each half the size of the original.
+2. Keep dividing each sublist until every piece has only one element.
+3. Merge two sublists together by repeatedly placing the smallest element first.
+4. Continue merging until you have combined all sublists back into a fully sorted list.
 
 #### Complexity
 Because it always divides the list, its performs the same 
 regardless of the initial order. It takes $\log(n)$ levels 
 of division, and each level takes $O(n)$ work to merge.
 
--   **Best Case:** $O(n \log n)$
--   **Average Case:** $O(n \log n)$
--   **Worst Case:** $O(n \log n)$
+- **Best Case:** $O(n \log n)$
+- **Average Case:** $O(n \log n)$
+- **Worst Case:** $O(n \log n)$
 
 #### Implementation
 
@@ -264,12 +253,11 @@ smaller, simpler ones. Merge Sort is far beyond what a person could
 reasonably keep track of by hand.
 
 ### Python's sorted() or Timsort
-Timsort is the built-in sorting algorithm used by Python. It's what 
-under the hood of the sorted() function. It's a hybrid algorithm, 
-combining Insertion Sort and Merge Sort. It's designed to be very 
-fast on "real-world" data, which often contains partially-sorted 
-"runs". It finds these runs, sorts them with Insertion Sort if they 
-are small, and then merges them using Merge Sort.
+Timsort is the built-in sorting algorithm used by Python. It's a hybrid 
+algorithm, combining Insertion Sort and Merge Sort. It's designed to be 
+very fast on "real-world" data, that has partially-sorted "runs". It 
+finds these runs, sorts them with Insertion Sort if they are small, and 
+then merges them using Merge Sort.
 
 #### Complexity
 It is highly optimized, with a best-case of $O(n)$ and an average/worst case of $O(n \log n)$ (like Merge Sort).
@@ -292,9 +280,9 @@ demonstrate a terrible, inefficient approach. Its strategy is simple:
 
 #### Complexity
 
--   **Best Case:** The list is already sorted. It checks once and finishes: $O(n)$.
--   **Average Case:** The algorithm relies on random chance to find the *one* correct permutation out of $n!$ possible permutations: $O(n!)$.
--   **Worst Case:** It is not guaranteed to ever finish. It could shuffle the list into the same incorrect orders forever: $\infty$.
+- **Best Case:** The list is already sorted. It checks once and finishes: $O(n)$.
+- **Average Case:** The algorithm relies on random chance to find the *one* correct permutation out of $n!$ possible permutations: $O(n!)$.
+- **Worst Case:** It is not guaranteed to ever finish. It could shuffle the list into the same incorrect orders forever: $\infty$.
 
 #### Implementation
 
@@ -408,18 +396,17 @@ rotate_df = df_random.pivot_table(
 )
 
 order = ["Selection Sort","Insertion Sort","Bubble Sort","Merge Sort","Python's Timsort"]
-rotate_df = rotate_df.reindex(order, level="Algorithm", fill_value="-")
+rotate_df = rotate_df.reindex(order, fill_value="-")
+rotate_df.index.name = None
 
 rotate_df
 ```
-> We use reindex to change the default index values from numerical to using the algorithms as the index.
+> Looking at this `pandas` table we can already tell a lot,
+like how Selection and Insertion sort are very close in values 
+and how Merge Sort starts off slower but improves as list size 
+increases.
 
 ### Visualization
-Scientifc computing allows us to test, visualize, and interpet these
-different algorithms instantly. Without automated computation this
-would have taken countless hours of manual timing, data collection, 
-and graphing.
-
 Now in order to take a better look at all the data we write a 
 function that when given a `list_type`, will output all of the 
 different algorithms' performance on that list.
@@ -495,14 +482,20 @@ reversed list from 1 to $n$.
 #| fig-align: center
 plot_list_type_performance(df, "reversed_list")
 ```
-
-> This graph represents the worst case scenario where data is reversed.
+> This graph represents the worst case scenario where data is reversed
+and requires the most passes.
 
 We can see Bubble Sort has gone back to being one of the slowest algorithms, 
-and most of the algorithms are slower than in the random case. By looking at 
-these variations in lists, we are able to tell that some algorithms are better 
-at different tasks, which is why it's important to know the difference in 
-performance for each algorithm.
+and most of the algorithms are slower. By looking at these variations in 
+lists, we are able to tell that some algorithms are better at different 
+tasks, which is why it's important to know the difference in performance 
+for each algorithm.
+
+Without scientific computing all of this would have taken countless 
+hours of manual timing, data collection, and graphing. You'd also have 
+to look at my hand drawn graphs and no one wants that. Scientifc computing 
+allows us to test, visualize, and interpet these different algorithms 
+instantly. 
 
 ## Ending Notes
 
