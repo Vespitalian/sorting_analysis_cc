@@ -311,6 +311,52 @@ This is effectively the same as taking a deck of cards,
 shuffling them, checking if they're sorted and repeating 
 the process until they are.
 
+#### Why Bogo Sort is Absurdly Slow
+
+Let's use SymPy to calculate exactly how many possible 
+orderings exist for different list sizes. Bogo Sort has 
+to randomly stumble upon the **ONE** correct ordering out of 
+all possibilities.
+
+```{python}
+#| label: bogo-sympy
+#| fig-align: center
+import pandas as pd
+import sympy
+from IPython.display import Markdown
+
+n = sympy.symbols('n')
+P = sympy.Function('P')
+permutations = sympy.factorial(n)
+
+bogo_data = []
+for size in [3, 5, 7, 10, 13]:
+    total = int(sympy.factorial(size))
+    bogo_data.append({
+        "List Size": size,
+        "Permutations": f"{total:,}",
+    })
+
+equation = sympy.latex(sympy.Eq(P(n), permutations))
+display(Markdown(f"$$\n{equation}\n$$"))
+```
+
+- This is equation represents the math that we are doing in order
+to find out how many combinations a list of size $n$ has.
+
+Taking a look at at the table created above we can see that 
+even a list of 13 items has over **6 BILLION** possible combinations. 
+Bogo Sort could shuffle for days and still not find the correct order. 
+This is why we will exclude bogo from our benchmarks.
+
+```{python}
+#| label: bogo-table
+#| echo: false
+df = pd.DataFrame(bogo_data)
+df.index = [''] * len(df)
+df
+```
+
 ## Benchmarking
 
 ### Setup
@@ -320,7 +366,6 @@ setup the lists we will be sorting.
 
 ```{python}
 #| label: setup
-import pandas as pd
 import time
 import random
 
@@ -392,7 +437,6 @@ rotate_df = df_random.pivot_table(
     index=["Algorithm"],
     columns="Size",
     values="Time (s)",
-    fill_value="-" # Used for bogo sort
 )
 
 order = ["Selection Sort","Insertion Sort","Bubble Sort","Merge Sort","Python's Timsort"]
@@ -533,3 +577,15 @@ graphing, and even data comparison. In this project, scientific computing
 not only ran the algorithms but also generated the graphs, recorded timing
 data. Tasks that would have taken much longer to do by hand. It truly makes 
 our lives easier by saving time.
+
+---
+```{python}
+#| label: document-stats
+#| echo: false
+import subprocess
+
+wc_result = subprocess.run(['wc', '-w', 'index.qmd'], capture_output=True, text=True)
+words = int(wc_result.stdout.split()[0])
+
+print(f"This document contains {words:,} words.")
+```
