@@ -23,8 +23,8 @@ lightbox: true
 
 Scientific computing has transformed how humans work, 
 think, and solve problems. We can automate complex, 
-repetitive, and time-consuming tasks that would can 
-take hours or even days to complete by hand. This project 
+repetitive, and time-consuming tasks that can take 
+hours or even days to complete by hand. This project 
 shows how scientific computing makes our lives easier by 
 taking on the tedious parts of problems.
 
@@ -71,17 +71,18 @@ long to do efficiently in practice.
 ### Selection Sort
 Selection Sort is one of the most straightforward algorithms and it 
 clearly shows how scientific computing can automate human steps. It 
-finds the smallest element in a list, moves it to the beginning, and 
-repeats the process until everything is in order.
+finds the smallest element in a list, moves it to the next position 
+in the sorted portion, and repeats the process until everything is 
+in order.
 
 1. Scan the unsorted portion of the list to locate the lowest value.
 2. Swap this lowest value with the element at the current starting position of the unsorted sublist.
 3. Repeat the process for the remaining unsorted elements until the entire list is sorted.
 
 #### Time Complexity
-Selection sort scans the remaing $n$ elements $n$ times, regardless 
+Selection sort scans the remaining $n$ elements $n$ times, regardless 
 of whether the list is sorted or not. Its number of comparisons stays 
-the same for every case resulting in a time complexity of $O(n^2)$.
+the same for every case, resulting in a time complexity of $O(n^2)$.
 
 - **Best Case:** $O(n^2)$
 - **Average Case:** $O(n^2)$
@@ -135,11 +136,14 @@ def insert_sort(in_lst):
     n = len(lst)
     for i in range(1,n):
         insert_index = i
-        current_value = lst.pop(i)
+        current_value = lst[i]
         for j in range(i-1, -1, -1):
             if lst[j] > current_value:
+                lst[j+1] = lst[j]
                 insert_index = j
-        lst.insert(insert_index, current_value)
+            else:
+                break
+        lst[insert_index] = current_value
     return lst
 ```
 > This code is modified from w3schools.com
@@ -152,7 +156,7 @@ the end of the list with each pass.
 
 1. Go through the list, one value at a time.
 2. For each value, compare the value with the next value.
-3. If the value is higher than the next one, swap the values so that the highest value comes last.
+3. If the value is higher than the next one, swap the values so that the higher value moves right.
 4. Go through the list as many times as there are values in the list.
 
 #### Complexity
@@ -185,9 +189,7 @@ def bubble_sort(in_lst):
 > This code is modified from w3schools.com
 
 This is the simplest version for a human as it's similar to 
-picking up two numbers, whichever is smaller you put down 
-and then pick up the next number and repeat until the list 
-is sorted.
+repeatedly comparing neighbors and swapping them when out of order.
 
 ### Merge Sort
 Merge Sort is a big leap in how complex and efficient the 
@@ -247,7 +249,7 @@ def mergeSort(in_lst):
 ```
 > This code is modified from w3schools.com
 
-This divide and conquer method is a bit complicated for a human and 
+This divide and conquer method is a bit complicated for a human, and 
 shows how computers can manage complex tasks by breaking them into 
 smaller, simpler ones. Merge Sort is far beyond what a person could 
 reasonably keep track of by hand.
@@ -255,7 +257,7 @@ reasonably keep track of by hand.
 ### Python's sorted() or Timsort
 Timsort is the built-in sorting algorithm used by Python. It's a hybrid 
 algorithm, combining Insertion Sort and Merge Sort. It's designed to be 
-very fast on "real-world" data, that has partially-sorted "runs". It 
+very fast on "real-world" data that has partially-sorted "runs". It 
 finds these runs, sorts them with Insertion Sort if they are small, and 
 then merges them using Merge Sort.
 
@@ -281,8 +283,8 @@ demonstrate a terrible, inefficient approach. Its strategy is simple:
 #### Complexity
 
 - **Best Case:** The list is already sorted. It checks once and finishes: $O(n)$.
-- **Average Case:** The algorithm relies on random chance to find the *one* correct permutation out of $n!$ possible permutations: $O(n!)$.
-- **Worst Case:** It is not guaranteed to ever finish. It could shuffle the list into the same incorrect orders forever: $\infty$.
+- **Average Case:** The algorithm relies on random chance to find the *one* correct permutation out of $n!$ possible permutations. $O(n!)$.
+- **Worst Case:** It could shuffle the list into the same incorrect orders forever. $\infty$.
 
 #### Implementation
 
@@ -341,10 +343,10 @@ equation = sympy.latex(sympy.Eq(P(n), permutations))
 display(Markdown(f"$$\n{equation}\n$$"))
 ```
 
-- This is equation represents the math that we are doing in order
+- This equation represents the math that we are doing in order
 to find out how many combinations a list of size $n$ has.
 
-Taking a look at at the table created above we can see that 
+Taking a look at the table created above we can see that 
 even a list of 13 items has over **6 BILLION** possible combinations. 
 Bogo Sort could shuffle for days and still not find the correct order. 
 This is why we will exclude bogo from our benchmarks.
@@ -427,7 +429,7 @@ df
 
 ### Data Table
 
-- Now we can modify the `DataFrame` to take a look at just one category, random lists and compare it across all algorithms by transforming the `DataFrame`.
+- Now we can modify the `DataFrame` to take a look at just one category, random lists, and compare it across all algorithms by transforming the `DataFrame`.
 
 ```{python}
 #| label: data-rotate
@@ -490,7 +492,7 @@ Now with this function created lets take a look at our random list.
 plot_list_type_performance(df, "random_list")
 ```
 
-> This graph represents that average scenario where the data is completely randomly generated 1 through $n$ (list size).
+> This graph represents the average scenario where the data is completely randomly generated 1 through $n$ (list size).
 
 Looking at this graph, we can immediately tell that the superior 
 option is in fact Timsort, as expected. We can also see a few other 
@@ -512,13 +514,11 @@ plot_list_type_performance(df, "sorted_list")
 
 > This graph shows each algorithm's performance in the best-case scenario, where the list is already sorted, and the algorithm's job is to confirm that fact.
 
-We can notice when comparing it to the previous list bubble sort is 
-signifcantly better moving from the worst performance to the second 
-best because the swapped variable that allows it to exit after one pass. 
-Other than bubble sort the majority of performance remains similar 
-although faster for all algorithms besides insertion and selection sort.
+We can notice when comparing it to the previous list, Bubble and 
+Insertion Sort are significantly better, because of their best
+case scenarios where they verify the list is sorted.
 
-We are now going to take a look at our last list type which is just a 
+We are now going to take a look at our last list type which is a 
 reversed list from 1 to $n$.
 
 ```{python}
@@ -526,7 +526,7 @@ reversed list from 1 to $n$.
 #| fig-align: center
 plot_list_type_performance(df, "reversed_list")
 ```
-> This graph represents the worst case scenario where data is reversed
+> This graph represents the worst-case scenario where data is reversed
 and requires the most passes.
 
 We can see Bubble Sort has gone back to being one of the slowest algorithms, 
@@ -537,7 +537,7 @@ for each algorithm.
 
 Without scientific computing all of this would have taken countless 
 hours of manual timing, data collection, and graphing. You'd also have 
-to look at my hand drawn graphs and no one wants that. Scientifc computing 
+to look at my hand drawn graphs and no one wants that. Scientific computing 
 allows us to test, visualize, and interpet these different algorithms 
 instantly. 
 
@@ -555,7 +555,7 @@ algorithm shines and where they are weak.
 Currently, the timing relies on `time.time()`, which provides a 
 quick and general result. For more precision, the `timeit` module 
 could be used to measure average performance over many runs, reducing 
-any random noise or “garbage” timing data. This would make the 
+variance from any system "noise" or other processes. This would make the 
 comparison more accurate.
 
 ### Real-World Impact
@@ -568,7 +568,7 @@ huge amounts of manual effort and time.
 Imagine trying to manually organize millions of products on Amazon or 
 posts on social media. It would be impossible. But through algorithms 
 like Merge Sort and Python’s built-in Timsort, computers are able to
-complete these tasks instantly and perfectly. This is the why scientific 
+complete these tasks instantly and perfectly. This is why scientific 
 computing is so valuable, it lets machines handle the hard work.
 
 ### Final Thoughts
