@@ -70,7 +70,7 @@ long to do efficiently in practice.
 
 ### Selection Sort
 Selection Sort is one of the most straightforward algorithms and it 
-clearly shows how scientific computing can automate human steps. It 
+clearly shows how computing can automate human steps. It 
 finds the smallest element in a list, moves it to the next position 
 in the sorted portion, and repeats the process until everything is 
 in order.
@@ -100,10 +100,10 @@ def select_sort(in_lst):
         for j in range(i+1, n):
             if lst[j] < lst[min_index]:
                 min_index = j
-        lst[i], lst[min_index], = lst[min_index], lst[i]
+        lst[i], lst[min_index] = lst[min_index], lst[i]
     return lst
 ```
-> This code is modified from w3schools.com.
+> Modified from w3schools.com
 
 ### Insertion Sort
 This algorithm builds the sorted list one element at a time. 
@@ -146,7 +146,7 @@ def insert_sort(in_lst):
         lst[insert_index] = current_value
     return lst
 ```
-> This code is modified from w3schools.com
+> Modified from w3schools.com
 
 ### Bubble Sort
 Bubble Sort is another simple, $O(n^2)$ algorithm. It repeatedly 
@@ -186,7 +186,7 @@ def bubble_sort(in_lst):
 
     return lst
 ```
-> This code is modified from w3schools.com
+> Modified from w3schools.com
 
 This is the simplest version for a human as it's similar to 
 repeatedly comparing neighbors and swapping them when out of order.
@@ -227,7 +227,6 @@ def merge(left, right):
             result.append(right[j])
             j += 1
 
-    # Append any remaining elements
     result.extend(left[i:])
     result.extend(right[j:])
 
@@ -247,7 +246,7 @@ def mergeSort(in_lst):
 
     return merge(sortedLeft, sortedRight)
 ```
-> This code is modified from w3schools.com
+> Modified from w3schools.com
 
 This divide and conquer method is a bit complicated for a human, and 
 shows how computers can manage complex tasks by breaking them into 
@@ -307,7 +306,7 @@ def bogo_sort(in_lst):
 
     return lst
 ```
-> This code is modified from w3resource.com
+> Modified from w3resource.com
 
 This is effectively the same as taking a deck of cards, 
 shuffling them, checking if they're sorted and repeating 
@@ -315,21 +314,31 @@ the process until they are.
 
 #### Why Bogo Sort is Absurdly Slow
 
-Let's use SymPy to calculate exactly how many possible 
-orderings exist for different list sizes. Bogo Sort has 
-to randomly stumble upon the **ONE** correct ordering out of 
-all possibilities.
+We will use SymPy to write the equation that tells us
+how many possible combinations the lists have when using Bogo 
+Sort. This equation will represent the math needed in order 
+to find out how many combinations a list of size $n$ has.
 
 ```{python}
 #| label: bogo-sympy
-#| fig-align: center
-import pandas as pd
 import sympy
 from IPython.display import Markdown
 
 n = sympy.symbols('n')
 P = sympy.Function('P')
 permutations = sympy.factorial(n)
+
+eq = sympy.latex(sympy.Eq(P(n), permutations))
+display(Markdown(f"$$\n{eq}\n$$"))
+```
+
+Now let's calculate exactly how many possible combinations
+exist for different list sizes. Bogo Sort has to randomly 
+stumble upon the **ONE** correct ordering out of all possibilities.
+
+```{python}
+#| label: bogo-table
+import pandas as pd
 
 bogo_data = []
 for size in [3, 5, 7, 10, 13]:
@@ -339,27 +348,19 @@ for size in [3, 5, 7, 10, 13]:
         "Permutations": f"{total:,}",
     })
 
-equation = sympy.latex(sympy.Eq(P(n), permutations))
-display(Markdown(f"$$\n{equation}\n$$"))
+df = pd.DataFrame(bogo_data)
+df.index = [''] * len(df)
+df
 ```
-
-- This equation represents the math that we are doing in order
-to find out how many combinations a list of size $n$ has.
 
 Taking a look at the table created above we can see that 
 even a list of 13 items has over **6 BILLION** possible combinations. 
 Bogo Sort could shuffle for days and still not find the correct order. 
 This is why we will exclude bogo from our benchmarks.
 
-```{python}
-#| label: bogo-table
-#| echo: false
-df = pd.DataFrame(bogo_data)
-df.index = [''] * len(df)
-df
-```
-
 ## Benchmarking
+Having examined the theory behind these algorithms, we will now test
+them using Python to verify their expected performance.
 
 ### Setup
 First we need to import all of the different libraries 
@@ -376,21 +377,21 @@ algorithms = [
     (insert_sort, "Insertion Sort"),
     (bubble_sort, "Bubble Sort"),
     (mergeSort, "Merge Sort"),
-    (sorted, "Python's Timsort")
+    (sorted, "Timsort")
 ]
 
-def grab_list(name, n): # Generate list
+def grab_list(name, n): 
     if name == "random_list":
         return random.sample(range(1, n+1),n)
     if name == "sorted_list":
-        return list(range(1,n))
+        return list(range(1,n+1))
     if name == "reversed_list":
-        return list(range(1,n))[::-1]
+        return list(range(n,0,-1))
 ```
 
 ### Execution
 The most important part of the benchmark is testing various 
-lengths and data spreads. We measure the time taken for each 
+lengths and data distributions. We measure the time taken for each 
 algorithm to sort the different lists. Our test cases:
 
 1.  List Sizes: Ranging from 10 to 5000
@@ -399,8 +400,8 @@ algorithm to sort the different lists. Our test cases:
 ```{python}
 #| label: data
 #| cache: true
-n_values = [10, 50, 100, 250, 1000, 2500, 5000] # Different list sizes
-lsts = ["random_list", "sorted_list", "reversed_list"] # Previously defined lists
+n_values = [10, 50, 100, 250, 1000, 2500, 5000]
+lsts = ["random_list", "sorted_list", "reversed_list"]
 results = []
 
 for n in n_values:
@@ -412,7 +413,7 @@ for n in n_values:
             function(current_list)
             end_time = time.time()
 
-            time_total = end_time - start_time # Calculate the total time
+            time_total = end_time - start_time
 
             results.append({
                 "Algorithm": algorithm,
@@ -441,7 +442,7 @@ rotate_df = df_random.pivot_table(
     values="Time (s)",
 )
 
-order = ["Selection Sort","Insertion Sort","Bubble Sort","Merge Sort","Python's Timsort"]
+order = ["Selection Sort","Insertion Sort","Bubble Sort","Merge Sort","Timsort"]
 rotate_df = rotate_df.reindex(order, fill_value="-")
 rotate_df.index.name = None
 
@@ -468,7 +469,6 @@ def plot_list_type_performance(df, list_type):
     }
 
     df_plot = df[df["List Type"] == list_type]
-    #plt.figure(figsize=(10, 6))
 
     for algorithm in df_plot["Algorithm"].unique():
         algo_data = df_plot[df_plot["Algorithm"] == algorithm]
@@ -481,7 +481,7 @@ def plot_list_type_performance(df, list_type):
     plt.grid(True, which="both", ls="--", linewidth=0.5)
     plt.yscale('log')
 
-    plt.show
+    plt.show()
 ```
 
 Now with this function created lets take a look at our random list.
@@ -535,10 +535,10 @@ lists, we are able to tell that some algorithms are better at different
 tasks, which is why it's important to know the difference in performance 
 for each algorithm.
 
-Without scientific computing all of this would have taken countless 
+Without these tools all of this would have taken countless 
 hours of manual timing, data collection, and graphing. You'd also have 
 to look at my hand drawn graphs and no one wants that. Scientific computing 
-allows us to test, visualize, and interpet these different algorithms 
+allows us to test, visualize, and interpret these different algorithms 
 instantly. 
 
 ## Ending Notes
