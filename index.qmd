@@ -23,7 +23,7 @@ embed-resources: true
 lightbox: true
 ---
 
-## Preamble
+## Introduction 
 
 Scientific computing has transformed how humans work, 
 think, and solve problems. We can automate complex, 
@@ -40,7 +40,17 @@ sorting algorithms in Python, we can see how scientific
 computing not only increases our efficiency but it also 
 reduces human effort and error.
 
-#### Why Sorting Matters
+- **Thesis**: Scientific computing lets us solve problems that would 
+be impossible to solve by hand. By testing sorting 
+algorithms in Python, this project shows that computers 
+don't just work faster than humans, they help us complete 
+goals we couldn't do on our own. Comparing five different 
+algorithms across different data distributions, generating 
+graphs, and calculating statistics could take weeks of 
+manual work. With Python, it takes minutes. This is why 
+scientific computing matters.
+
+### *Why* Sorting Matters
 
 Imagine trying to find a word in a dictionary that's in 
 a completely random order. It would take forever; you 
@@ -84,7 +94,7 @@ in order.
 3. Repeat the process for the remaining unsorted elements until the entire list is sorted.
 
 #### Time Complexity
-Selection sort scans the remaining $n$ elements $n$ times, regardless 
+Selection Sort scans the remaining $n$ elements $n$ times, regardless 
 of whether the list is sorted or not. Its number of comparisons stays 
 the same for every case, resulting in a time complexity of $O(n^2)$.
 
@@ -275,93 +285,6 @@ It is highly optimized, with a best-case of $O(n)$ and an average/worst case of 
 
 > We will use the built-in `sorted()` function directly in our benchmark.
 
-### Bogo Sort
-Bogo Sort is a joke algorithm used only for educational purposes to 
-demonstrate a terrible, inefficient approach. Its strategy is simple:
-
-1.  Check if the list is sorted.
-2.  If not, randomly shuffle the list.
-3.  Repeat.
-
-#### Complexity
-
-- **Best Case:** The list is already sorted. It checks once and finishes: $O(n)$.
-- **Average Case:** The algorithm relies on random chance to find the *one* correct permutation out of $n!$ possible permutations. $O(n!)$.
-- **Worst Case:** It could shuffle the list into the same incorrect orders forever. $\infty$.
-
-#### Implementation
-
-```{python}
-#| label: bogo
-import random
-
-def is_sorted(lst):
-    n = len(lst)
-    for i in range(n - 1):
-        if lst[i] > lst[i + 1]:
-            return False
-    return True
-
-def bogo_sort(in_lst):
-    lst = in_lst[::]
-
-    while not is_sorted(lst):
-        random.shuffle(lst)
-
-    return lst
-```
-> Modified from w3resource.com
-
-This is effectively the same as taking a deck of cards, 
-shuffling them, checking if they're sorted and repeating 
-the process until they are.
-
-#### Why Bogo Sort is Absurdly Slow
-
-We will use SymPy to write the equation that tells us
-how many possible combinations the lists have when using Bogo 
-Sort. This equation will represent the math needed in order 
-to find out how many combinations a list of size $n$ has.
-
-```{python}
-#| label: bogo-sympy
-import sympy
-from IPython.display import Markdown
-
-n = sympy.symbols('n')
-P = sympy.Function('P')
-permutations = sympy.factorial(n)
-
-eq = sympy.latex(sympy.Eq(P(n), permutations))
-display(Markdown(f"$$\n{eq}\n$$"))
-```
-
-Now let's calculate exactly how many possible combinations
-exist for different list sizes. Bogo Sort has to randomly 
-stumble upon the **ONE** correct ordering out of all possibilities.
-
-```{python}
-#| label: bogo-table
-import pandas as pd
-
-bogo_data = []
-for size in [3, 5, 7, 10, 13]:
-    total = int(sympy.factorial(size))
-    bogo_data.append({
-        "List Size": size,
-        "Permutations": f"{total:,}",
-    })
-
-df = pd.DataFrame(bogo_data)
-df.index = [''] * len(df)
-df
-```
-
-Taking a look at the table created above we can see that 
-even a list of 13 items has over **6 BILLION** possible combinations. 
-Bogo Sort could shuffle for days and still not find the correct order. 
-This is why we will exclude bogo from our benchmarks.
-
 ## Benchmarking
 Having examined the theory behind these algorithms, we will now test
 them using Python to verify their expected performance.
@@ -404,6 +327,8 @@ algorithm to sort the different lists. Our test cases:
 ```{python}
 #| label: data
 #| cache: true
+import pandas as pd
+
 n_values = [10, 50, 100, 250, 1000, 2500, 5000]
 lsts = ["random_list", "sorted_list", "reversed_list"]
 results = []
@@ -447,7 +372,7 @@ rotate_df = df_random.pivot_table(
 )
 
 order = ["Selection Sort","Insertion Sort","Bubble Sort","Merge Sort","Timsort"]
-rotate_df = rotate_df.reindex(order, fill_value="-")
+rotate_df = rotate_df.reindex(order)
 rotate_df.index.name = None
 
 rotate_df
@@ -518,9 +443,18 @@ plot_list_type_performance(df, "sorted_list")
 
 > This graph shows each algorithm's performance in the best-case scenario, where the list is already sorted, and the algorithm's job is to confirm that fact.
 
-We can notice when comparing it to the previous list, Bubble and 
-Insertion Sort are significantly better, because of their best
-case scenarios where they verify the list is sorted.
+This list reveals each algorithm on its best behavior, that being how well
+it can recognize that and confirm that no work is needed. Insertion and 
+Bubble sort both perform much better in this scenario because they both 
+include logic that checks to see if the list is already sorted. While an
+algorithm like Selection Sort goes through the entire list multiple times
+verifying that each value is already in its correct spot.
+
+The sorted list shows us that algorithms that adapt to their given data
+can outperform rigid algorithms like Merge or Selection Sort. Data is 
+rarely completely random, there are patterns in the timestamps of emails,
+numbers on credit cards, or even user-generated content. Algorithms that 
+take advantage of this fact will perform the best.
 
 We are now going to take a look at our last list type which is a 
 reversed list from 1 to $n$.
@@ -533,11 +467,17 @@ plot_list_type_performance(df, "reversed_list")
 > This graph represents the worst-case scenario where data is reversed
 and requires the most passes.
 
-We can see Bubble Sort has gone back to being one of the slowest algorithms, 
-and most of the algorithms are slower. By looking at these variations in 
-lists, we are able to tell that some algorithms are better at different 
-tasks, which is why it's important to know the difference in performance 
-for each algorithm.
+The reversed list shows the algorithms under maximum stress. Insertion 
+Sort has to shift every element all the way to the beginning of the 
+list giving us our mathematical maximum for this algorithm. The same 
+applies to Bubble Sort where each value has to bubble through 
+every position. On the other hand, Selection Sort it remains 
+consistent across all variations of the lists.
+
+By looking at these variations in lists, we are able to tell that 
+some algorithms are better at different tasks, which is why 
+it's important to know the difference in performance for each 
+algorithm.
 
 Without these tools all of this would have taken countless 
 hours of manual timing, data collection, and graphing. You'd also have 
@@ -582,7 +522,98 @@ not only ran the algorithms but also generated the graphs, recorded timing
 data. Tasks that would have taken much longer to do by hand. It truly makes 
 our lives easier by saving time.
 
+## Appendix
+
+### Bogo Sort
+While looking at different sorting algorithms, it doesn't take long
+to stumble upon Bogo Sort. Bogo Sort is a joke algorithm used only 
+for educational purposes to demonstrate a terrible, inefficient 
+approach. Its strategy is simple:
+
+1.  Check if the list is sorted.
+2.  If not, randomly shuffle the list.
+3.  Repeat.
+
+#### Complexity
+
+- **Best Case:** The list is already sorted. It checks once and finishes: $O(n)$.
+- **Average Case:** The algorithm relies on random chance to find the *one* correct permutation out of $n!$ possible permutations. $O(n!)$.
+- **Worst Case:** It could shuffle the list into the same incorrect orders forever. $\infty$.
+
+#### Implementation
+
+```{python}
+#| label: bogo
+
+def is_sorted(lst):
+    n = len(lst)
+    for i in range(n - 1):
+        if lst[i] > lst[i + 1]:
+            return False
+    return True
+
+def bogo_sort(in_lst):
+    lst = in_lst[::]
+
+    while not is_sorted(lst):
+        random.shuffle(lst)
+
+    return lst
+```
+> Modified from w3resource.com
+
+This is effectively the same as taking a deck of cards, 
+shuffling them, checking if they're sorted and repeating 
+the process until they are.
+
+#### Why Bogo Sort is Absurdly Slow
+
+We will use SymPy to write the equation that tells us
+how many possible combinations the lists have when using Bogo 
+Sort. This equation will represent the math needed in order 
+to find out how many combinations a list of size $n$ has.
+
+```{python}
+#| label: bogo-sympy
+#| output: asis
+import sympy
+
+n = sympy.symbols('n')
+P = sympy.Function('P')
+permutations = sympy.factorial(n)
+
+eq = sympy.Eq(P(n), permutations)
+print(f"$$ {sympy.latex(eq)} $$")
+```
+
+Now let's calculate exactly how many possible combinations
+exist for different list sizes. Bogo Sort has to randomly 
+stumble upon the **ONE** correct ordering out of all possibilities.
+
+```{python}
+#| label: bogo-table
+
+bogo_data = []
+for size in [3, 5, 7, 10, 13]:
+    total = int(sympy.factorial(size))
+    bogo_data.append({
+        "List Size": size,
+        "Permutations": f"{total:,}",
+    })
+
+df = pd.DataFrame(bogo_data)
+df.index = [''] * len(df)
+df
+```
+
+Taking a look at the table created above we can see that 
+even a list of 13 items has over **6 BILLION** possible combinations. 
+Bogo Sort could shuffle for days and still not find the correct order. 
+This is why we excluded bogo from our benchmarks. Bogo Sort reminds us 
+that not all answers to solving a problem are good ones. 
+
 ---
+
 ```{python}
 #| label: document-stats
 #| echo: false
