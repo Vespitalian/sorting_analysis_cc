@@ -617,10 +617,10 @@ that not all answers to solving a problem are good ones.
 ```{python}
 #| label: document-stats
 #| echo: false
-import subprocess
+import os
 
-wc_result = subprocess.run(['wc', '-w', 'index.qmd'], capture_output=True, text=True)
-words = int(wc_result.stdout.split()[0])
+output = os.popen('wc -w index.qmd').read()
+words = int(output.split()[0])
 
 print(f"This document has {words:,} words.")
 ```
